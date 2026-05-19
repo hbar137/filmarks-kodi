@@ -51,7 +51,7 @@ def _show_listitem(show, ratings=None, watched=False, on_watchlist=False, progre
         w = int(progress.get("watched") or 0)
         t = int(progress.get("total") or 0)
         if w >= t:
-            label = "[COLOR green][✓][/COLOR] " + label
+            label = "[COLOR green][√][/COLOR] " + label
         else:
             label = "%s  [COLOR gray]%d/%d[/COLOR]" % (label, w, t)
 
@@ -247,7 +247,7 @@ def season_detail(handle, show_id, season):
         prefix = "S%02dE%02d" % (ep.get("season_number") or 0, ep.get("episode_number") or 0)
         label = "%s  %s" % (prefix, title) if title else prefix
         if watched:
-            label = "[COLOR gray][✓][/COLOR] " + label
+            label = "[COLOR gray][√][/COLOR] " + label
         if ep_links:
             label = "[COLOR green][RD %d][/COLOR] %s" % (len(ep_links), label)
 
