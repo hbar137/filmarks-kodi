@@ -15,7 +15,7 @@ from . import api
 ADDON = xbmcaddon.Addon()
 
 _SEARCH_HISTORY_DIR = xbmcvfs.translatePath(
-    "special://profile/addon_data/plugin.video.movierec/")
+    "special://profile/addon_data/plugin.video.filmarks/")
 _SEARCH_HISTORY_MAX = 20
 
 
@@ -283,7 +283,7 @@ def _movie_listitem(movie, rating=None, watched=False, rd_available=False):
 
 
 def root(handle):
-    xbmcplugin.setPluginCategory(handle, "movieRec")
+    xbmcplugin.setPluginCategory(handle, "Filmarks")
     xbmcplugin.setContent(handle, "files")
     # Movies first, shows after — keep parallel ordering inside each block
     # (Watchlist, Browse, Search, History) so the user's eye can jump between
@@ -867,7 +867,7 @@ def import_movie(handle, movie_id):
     """Import a TMDB-only result into the local DB, then jump to its detail
     page. Used by search_results' TMDB-only rows."""
     progress = xbmcgui.DialogProgressBG()
-    progress.create("movieRec", "Importing from TMDB…")
+    progress.create("Filmarks", "Importing from TMDB…")
     try:
         try:
             api.post("/movies/import/%d" % movie_id, _timeout=60)
@@ -968,7 +968,7 @@ def resolve_links(handle, movie_id, update_listing=True):
     forced off in the re-render so a failed resolve doesn't loop."""
     import time
     progress = xbmcgui.DialogProgressBG()
-    progress.create("movieRec", "Resolving via Real-Debrid…")
+    progress.create("Filmarks", "Resolving via Real-Debrid…")
     found = False
     try:
         try:

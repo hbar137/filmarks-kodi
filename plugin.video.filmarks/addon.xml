@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.movierec"
-       name="movieRec"
-       version="0.6.5"
+<addon id="plugin.video.filmarks"
+       name="Filmarks"
+       version="1.0.0"
        provider-name="hbar137">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
@@ -18,11 +18,11 @@
         <provides>video</provides>
     </extension>
     <extension point="xbmc.addon.metadata">
-        <summary lang="en_GB">movieRec — browse and play from your movieRec server</summary>
-        <description lang="en_GB">Connects Kodi to a movieRec server. Browse dashboard, watchlist, shows, history, and search; play movies and episodes via Real-Debrid with subtitles and Trakt scrobbling.</description>
+        <summary lang="en_GB">Filmarks — browse and play from your Filmarks server</summary>
+        <description lang="en_GB">Connects Kodi to a Filmarks server. Browse dashboard, watchlist, shows, history, and search; play movies and episodes via Real-Debrid with subtitles and Trakt scrobbling.</description>
         <platform>all</platform>
         <license>GPL-3.0</license>
-        <source>https://github.com/hbar137/movieRec-kodi</source>
+        <source>https://github.com/hbar137/filmarks-kodi</source>
         <assets>
             <icon>icon.png</icon>
             <fanart>fanart.jpg</fanart>

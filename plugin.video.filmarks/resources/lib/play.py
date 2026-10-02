@@ -100,7 +100,7 @@ def play_link(handle, link_id, movie_id):
     dur = int(info.get("duration_seconds") or 0)
 
     li = xbmcgui.ListItem(path=stream_url)
-    title = info.get("title") or info.get("filename") or "movieRec"
+    title = info.get("title") or info.get("filename") or "Filmarks"
     vinfo = {"title": title, "mediatype": "movie"}
     if info.get("year"):
         vinfo["year"] = int(info["year"])
@@ -188,7 +188,7 @@ def play_episode(handle, link_id, episode_id, show_id):
     dur = int(info.get("duration_seconds") or 0)
 
     li = xbmcgui.ListItem(path=stream_url)
-    show_title = info.get("show_title") or "movieRec"
+    show_title = info.get("show_title") or "Filmarks"
     ep_title = info.get("episode_title") or info.get("filename") or ""
     season_num = int(info.get("season_number") or 0)
     ep_num = int(info.get("episode_number") or 0)
@@ -315,7 +315,7 @@ def _autoplay_next_watcher(show_id, season_num, episode_num):
     if not nxt:
         return
 
-    base = sys.argv[0] if sys.argv else "plugin://plugin.video.movierec/"
+    base = sys.argv[0] if sys.argv else "plugin://plugin.video.filmarks/"
     qs = _ulp.urlencode({
         "action": "play_next_episode",
         "episode_id": nxt["id"],
@@ -442,7 +442,7 @@ def _select_japanese_audio():
         if lang in jp_tokens or any(t in name for t in jp_tokens):
             try:
                 player.setAudioStream(int(s["index"]))
-                xbmc.log("[movieRec] audio: selected jpn stream idx=%s" % s["index"],
+                xbmc.log("[Filmarks] audio: selected jpn stream idx=%s" % s["index"],
                          xbmc.LOGINFO)
             except RuntimeError:
                 _notify("Anime: setAudioStream failed")
@@ -452,7 +452,7 @@ def _select_japanese_audio():
 
 def _notify(msg):
     try:
-        xbmcgui.Dialog().notification("movieRec", msg, xbmcgui.NOTIFICATION_INFO, 3000)
+        xbmcgui.Dialog().notification("Filmarks", msg, xbmcgui.NOTIFICATION_INFO, 3000)
     except Exception:
         pass
 
@@ -558,7 +558,7 @@ def _select_english_subtitle(stream_filename, external_count):
         try:
             player.setSubtitleStream(int(pick["index"]))
             player.showSubtitles(True)
-            xbmc.log("[movieRec] subs: embedded eng idx=%s name=%r" %
+            xbmc.log("[Filmarks] subs: embedded eng idx=%s name=%r" %
                      (pick["index"], pick.get("name")), xbmc.LOGINFO)
         except RuntimeError:
             _notify("Subs: setSubtitleStream failed")
@@ -577,7 +577,7 @@ def _select_english_subtitle(stream_filename, external_count):
             try:
                 player.setSubtitleStream(int(best["index"]))
                 player.showSubtitles(True)
-                xbmc.log("[movieRec] subs: external '%s' ratio=%.2f idx=%s" %
+                xbmc.log("[Filmarks] subs: external '%s' ratio=%.2f idx=%s" %
                          (best.get("name"), best_ratio, best["index"]), xbmc.LOGINFO)
             except RuntimeError:
                 _notify("Subs: setSubtitleStream failed")
@@ -703,7 +703,7 @@ def _show_skip_intro_otaku(intro_end, intro_is_aniskip):
         dlg.doModal()
         del dlg
     except Exception as e:
-        xbmc.log("[movieRec] skip-intro popup error: %s" % e, xbmc.LOGWARNING)
+        xbmc.log("[Filmarks] skip-intro popup error: %s" % e, xbmc.LOGWARNING)
 
 
 def _show_playing_next_otaku(outro_end, kind):
@@ -725,4 +725,4 @@ def _show_playing_next_otaku(outro_end, kind):
         dlg.doModal()
         del dlg
     except Exception as e:
-        xbmc.log("[movieRec] playing-next popup error: %s" % e, xbmc.LOGWARNING)
+        xbmc.log("[Filmarks] playing-next popup error: %s" % e, xbmc.LOGWARNING)

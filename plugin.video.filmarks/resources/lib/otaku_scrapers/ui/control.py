@@ -769,7 +769,7 @@ def exit_(code):
 
 
 def is_addon_visible():
-    return xbmc.getInfoLabel('Container.PluginName') == 'plugin.video.movierec'
+    return xbmc.getInfoLabel('Container.PluginName') == 'plugin.video.filmarks'
 
 
 def abort_requested():

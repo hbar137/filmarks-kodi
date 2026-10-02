@@ -14,7 +14,7 @@ def _send(movie_id, link_id, position, duration):
             "duration": float(duration),
         })
     except api.APIError as e:
-        xbmc.log("[movieRec] progress save failed: %s" % e, xbmc.LOGWARNING)
+        xbmc.log("[Filmarks] progress save failed: %s" % e, xbmc.LOGWARNING)
 
 
 def watch(movie_id, link_id):
@@ -63,7 +63,7 @@ def _send_episode(episode_id, show_id, link_id, position, duration):
             "duration": float(duration),
         })
     except api.APIError as e:
-        xbmc.log("[movieRec] episode progress save failed: %s" % e, xbmc.LOGWARNING)
+        xbmc.log("[Filmarks] episode progress save failed: %s" % e, xbmc.LOGWARNING)
 
 
 def watch_episode(episode_id, show_id, link_id):

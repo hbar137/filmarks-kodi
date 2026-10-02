@@ -12,7 +12,7 @@ def _send(action, imdb_id, progress):
             "progress": float(progress),
         })
     except api.APIError as e:
-        xbmc.log("[movieRec] scrobble %s failed: %s" % (action, e), xbmc.LOGWARNING)
+        xbmc.log("[Filmarks] scrobble %s failed: %s" % (action, e), xbmc.LOGWARNING)
 
 
 def watch(imdb_id, title):
@@ -82,7 +82,7 @@ def _send_episode(action, show_imdb_id, season, episode, progress):
             "progress": float(progress),
         })
     except api.APIError as e:
-        xbmc.log("[movieRec] episode scrobble %s failed: %s" % (action, e), xbmc.LOGWARNING)
+        xbmc.log("[Filmarks] episode scrobble %s failed: %s" % (action, e), xbmc.LOGWARNING)
 
 
 def watch_episode(show_imdb_id, season, episode, title):

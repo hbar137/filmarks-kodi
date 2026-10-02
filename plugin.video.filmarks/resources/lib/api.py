@@ -1,4 +1,4 @@
-"""Thin HTTP client for the movieRec server's /api/kodi endpoints."""
+"""Thin HTTP client for the Filmarks server's /api/kodi endpoints."""
 import json
 import urllib.parse
 import urllib.request
@@ -81,7 +81,7 @@ def signed_url(path, **params):
     return base + "/api/kodi" + path + "?" + urllib.parse.urlencode(qs)
 
 
-def notify(msg, heading="movieRec", icon=xbmcgui.NOTIFICATION_INFO, ms=4000):
+def notify(msg, heading="Filmarks", icon=xbmcgui.NOTIFICATION_INFO, ms=4000):
     xbmcgui.Dialog().notification(heading, msg, icon, ms)
 
 

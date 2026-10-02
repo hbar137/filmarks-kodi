@@ -13,7 +13,7 @@ License: GPL-3.0 (derived from Otaku).
 import xbmc
 import xbmcaddon
 
-_ADDON_ID = "plugin.video.movierec"
+_ADDON_ID = "plugin.video.filmarks"
 _ADDON = xbmcaddon.Addon(_ADDON_ID)
 
 # Defaults match Otaku's bundled values. Used whenever getInt(...) is

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <settings version="1">
-    <section id="movierec" label="30000">
+    <section id="filmarks" label="30000">
         <category id="server" label="30001">
             <group id="1" label="30004">
                 <setting id="server_url" type="string" label="30010">
                     <level>0</level>
-                    <default>https://movierec.eulerai.net</default>
+                    <default>https://filmarks.eulerai.net</default>
                     <control type="edit" format="string">
                         <heading>30010</heading>
                     </control>

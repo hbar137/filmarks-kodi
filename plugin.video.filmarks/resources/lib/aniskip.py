@@ -1,4 +1,4 @@
-"""Thin wrapper around the movieRec server's /aniskip proxy.
+"""Thin wrapper around the Filmarks server's /aniskip proxy.
 
 Returns intro/outro skip windows for a given show + per-show episode
 number. Both fields can be None when the upstream APIs (aniskip.com

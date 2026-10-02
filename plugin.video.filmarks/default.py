@@ -1,4 +1,4 @@
-# movieRec Kodi add-on entry point.
+# Filmarks Kodi add-on entry point.
 import sys
 from resources.lib import router
 

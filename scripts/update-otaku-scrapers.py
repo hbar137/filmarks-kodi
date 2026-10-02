@@ -2,12 +2,12 @@
 """Vendor Otaku's anime-embed scrapers + ALL their dependencies into
 our Kodi addon, line-by-line.
 
-Output goes to plugin.video.movierec/resources/lib/otaku_scrapers/.
+Output goes to plugin.video.filmarks/resources/lib/otaku_scrapers/.
 Everything is verbatim from upstream Otaku except:
   - import paths are rewritten to use relative imports inside the
     otaku_scrapers package (`from resources.lib.X` → `from ..X`)
   - the addon id in control.py is swapped from 'plugin.video.otaku'
-    to 'plugin.video.movierec' so Otaku's settings/profile/database
+    to 'plugin.video.filmarks' so Otaku's settings/profile/database
     helpers read OUR addon's state, not a non-existent Otaku install
 
 No thin replacements. No monkey-patches. If something breaks the right
@@ -70,7 +70,7 @@ INIT_FILES = [
 
 DEST_ROOT = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-    "plugin.video.movierec", "resources", "lib", "otaku_scrapers",
+    "plugin.video.filmarks", "resources", "lib", "otaku_scrapers",
 )
 
 
@@ -131,8 +131,8 @@ def post_process(src_text, rel_path):
     when Otaku isn't installed (which is the whole point of vendoring).
     """
     if rel_path == "ui/control.py":
-        src_text = src_text.replace("'plugin.video.otaku'", "'plugin.video.movierec'")
-        src_text = src_text.replace('"plugin.video.otaku"', '"plugin.video.movierec"')
+        src_text = src_text.replace("'plugin.video.otaku'", "'plugin.video.filmarks'")
+        src_text = src_text.replace('"plugin.video.otaku"', '"plugin.video.filmarks"')
     return src_text
 
 
@@ -144,7 +144,7 @@ CONTEXT_ADDON_DEST = os.path.join(
 
 def vendor_context_addon(otaku_dir, sha):
     """Copy Otaku's sibling context.otaku addon into our repo as a
-    standalone Kodi addon. plugin.video.movierec's vendored control.py
+    standalone Kodi addon. plugin.video.filmarks's vendored control.py
     references context.otaku for icon/genre asset paths + info.db, so
     we ship it alongside in our Kodi repo.
     """

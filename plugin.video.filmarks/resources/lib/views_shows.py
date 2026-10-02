@@ -429,7 +429,7 @@ def resolve_episode(handle, episode_id, show_id, season):
     appears, then re-render the season view (now populated)."""
     import time
     progress = xbmcgui.DialogProgressBG()
-    progress.create("movieRec", "Resolving via Real-Debrid…")
+    progress.create("Filmarks", "Resolving via Real-Debrid…")
     found = False
     try:
         try:
@@ -565,7 +565,7 @@ def import_show(handle, show_id):
     """Import a TMDB-only show into the local DB, then jump to its detail
     page. Used by search_shows_results' TMDB-only rows."""
     progress = xbmcgui.DialogProgressBG()
-    progress.create("movieRec", "Importing from TMDB…")
+    progress.create("Filmarks", "Importing from TMDB…")
     try:
         try:
             api.post("/shows/import/%d" % show_id, _timeout=120)
@@ -667,7 +667,7 @@ def pick_release(handle, episode_id, show_id, season):
     addMagnet that ONE hash. Avoids RD's burst anti-probe by never
     bursting addMagnet calls."""
     progress = xbmcgui.DialogProgressBG()
-    progress.create("movieRec", "Fetching cached releases…")
+    progress.create("Filmarks", "Fetching cached releases…")
     try:
         data = api.get("/realdebrid/episode-candidates/%d" % episode_id, _timeout=30)
     except api.APIError as e:
@@ -687,7 +687,7 @@ def pick_release(handle, episode_id, show_id, season):
             show_meta = {}
         if show_meta.get("is_anime"):
             ask = xbmcgui.Dialog().yesno(
-                "movieRec",
+                "Filmarks",
                 "No cached releases. Try embed sources instead?",
                 yeslabel="Embed sources", nolabel="Cancel")
             if ask:
@@ -695,7 +695,7 @@ def pick_release(handle, episode_id, show_id, season):
                     action="pick_embed_source", episode_id=episode_id,
                     show_id=show_id, season=season))
             return
-        xbmcgui.Dialog().notification("movieRec", "No cached releases found",
+        xbmcgui.Dialog().notification("Filmarks", "No cached releases found",
                                        xbmcgui.NOTIFICATION_WARNING, 3500)
         return
 
@@ -747,7 +747,7 @@ def pick_release(handle, episode_id, show_id, season):
         # link id (cache may be stale).
 
     progress = xbmcgui.DialogProgressBG()
-    progress.create("movieRec", "Resolving %s..." % ((chosen.get("title") or "")[:40]))
+    progress.create("Filmarks", "Resolving %s..." % ((chosen.get("title") or "")[:40]))
     body = {
         "hash":        hash_,
         "title":       chosen.get("title") or "",
@@ -852,7 +852,7 @@ def pick_embed_source(handle, episode_id, show_id, season):
                     year = str((media.get("startDate") or {}).get("year") or "")
         except Exception as e:
             anilist_err = f"{type(e).__name__}: {str(e)[:80]}"
-        xbmc.log(f"[movierec.embed] anilist '{title}' → mal_id={mal_id} err={anilist_err}",
+        xbmc.log(f"[filmarks.embed] anilist '{title}' → mal_id={mal_id} err={anilist_err}",
                  xbmc.LOGINFO)
     if not mal_id:
         api.notify(f"No MAL id ({anilist_err or 'AniList lookup failed'})",
@@ -868,7 +868,7 @@ def pick_embed_source(handle, episode_id, show_id, season):
     try:
         otaku_db.update_show(mal_id, kodi_meta, "")
     except Exception as e:
-        xbmc.log(f"[movierec.embed] otaku db.update_show: {e}", xbmc.LOGWARNING)
+        xbmc.log(f"[filmarks.embed] otaku db.update_show: {e}", xbmc.LOGWARNING)
 
     # Providers to query — the set the user has enabled in Otaku itself.
     # Order: AnimePahe first (confirmed-working baseline); AnimeKai +
@@ -882,7 +882,7 @@ def pick_embed_source(handle, episode_id, show_id, season):
     }
 
     progress = xbmcgui.DialogProgressBG()
-    progress.create("movieRec", "Scraping embed sources…")
+    progress.create("Filmarks", "Scraping embed sources…")
 
     import time as _time
 
@@ -892,11 +892,11 @@ def pick_embed_source(handle, episode_id, show_id, season):
         try:
             out = cls().get_sources(mal_id, ep_num) or []
             dt = _time.monotonic() - t0
-            xbmc.log(f"[movierec.embed] {name} → {len(out)} sources in {dt:.1f}s", xbmc.LOGINFO)
+            xbmc.log(f"[filmarks.embed] {name} → {len(out)} sources in {dt:.1f}s", xbmc.LOGINFO)
             return name, out, None, dt
         except Exception as e:
             dt = _time.monotonic() - t0
-            xbmc.log(f"[movierec.embed] {name} → ERROR {type(e).__name__}: {e} in {dt:.1f}s", xbmc.LOGWARNING)
+            xbmc.log(f"[filmarks.embed] {name} → ERROR {type(e).__name__}: {e} in {dt:.1f}s", xbmc.LOGWARNING)
             return name, [], f"{type(e).__name__}: {str(e)[:60]}", dt
 
     sources = []
@@ -965,12 +965,12 @@ def pick_embed_source(handle, episode_id, show_id, season):
     if chosen.get("type") == "embed":
         from .otaku_scrapers.ui import embed_extractor as otaku_embed
         progress2 = xbmcgui.DialogProgressBG()
-        progress2.create("movieRec", "Resolving embed…")
+        progress2.create("Filmarks", "Resolving embed…")
         try:
             resolved = otaku_embed.load_video_from_url(play_url)
         except Exception as e:
             resolved = None
-            xbmc.log(f"[movierec.embed] extractor failed for {play_url}: {e}",
+            xbmc.log(f"[filmarks.embed] extractor failed for {play_url}: {e}",
                      xbmc.LOGWARNING)
         finally:
             progress2.close()
