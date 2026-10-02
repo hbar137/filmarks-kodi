@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="repository.filmarks"
+       name="Filmarks Repository"
+       version="1.0.3"
+       provider-name="hbar137">
+    <extension point="xbmc.addon.repository" name="Filmarks">
+        <dir minversion="20.0.0">
+            <info compressed="false">https://hbar137.github.io/filmarks-kodi/addons.xml</info>
+            <checksum>https://hbar137.github.io/filmarks-kodi/addons.xml.md5</checksum>
+            <datadir zip="true">https://hbar137.github.io/filmarks-kodi/</datadir>
+        </dir>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en_GB">Repository for Filmarks Kodi add-ons</summary>
+        <description lang="en_GB">Install once to receive updates for plugin.video.filmarks automatically. Hosted on GitHub Pages.</description>
+        <platform>all</platform>
+        <assets>
+            <icon>icon-sun.png</icon>
+        </assets>
+        <license>MIT</license>
+        <source>https://github.com/hbar137/filmarks-kodi</source>
+    </extension>
+</addon>
