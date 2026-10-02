@@ -84,8 +84,8 @@ def _format_hms(seconds):
     return "%d:%02d" % (m, sec)
 
 
-def play_link(handle, link_id, movie_id):
-    info = api.get("/play/%d" % link_id)
+def play_link(handle, link_id, movie_id, info=None, seedbox=None):
+    info = info or api.get("/play/%d" % link_id)
     stream_url = info.get("stream_url")
     if not stream_url:
         api.notify("No stream URL available", icon=xbmcgui.NOTIFICATION_ERROR)
@@ -136,10 +136,10 @@ def play_link(handle, link_id, movie_id):
         ).start()
 
     # Progress reporter — saves resume position to the server every ~10s + on stop.
-    if movie_id:
+    if movie_id or seedbox:
         threading.Thread(
             target=progress_mod.watch,
-            args=(int(movie_id), int(link_id)),
+            args=(int(movie_id or 0), int(link_id), seedbox),
             daemon=True,
         ).start()
 
@@ -174,10 +174,11 @@ def _fetch_episode_subtitle_urls(episode_id, show_title=None, season=None, episo
     return urls[:5]
 
 
-def play_episode(handle, link_id, episode_id, show_id):
+def play_episode(handle, link_id, episode_id, show_id, info=None, seedbox=None, number=0):
     """Resolve an episode link, hand stream to Kodi with episode InfoLabels +
-    subtitles, then spawn scrobble + progress watchers."""
-    info = api.get("/play-episode/%d" % link_id)
+    subtitles, then spawn scrobble + progress watchers. A seedbox episode
+    comes with its info already fetched (play_seedbox)."""
+    info = info or api.get("/play-episode/%d" % link_id)
     stream_url = info.get("stream_url")
     if not stream_url:
         api.notify("No stream URL available", icon=xbmcgui.NOTIFICATION_ERROR)
@@ -221,7 +222,7 @@ def play_episode(handle, link_id, episode_id, show_id):
             li.setProperty("TotalTime", str(dur))
 
     sub_urls = _fetch_episode_subtitle_urls(
-        episode_id, show_title, season_num, ep_num)
+        episode_id, show_title, season_num, ep_num) if episode_id else []
     if sub_urls:
         li.setSubtitles(sub_urls)
 
@@ -247,13 +248,13 @@ def play_episode(handle, link_id, episode_id, show_id):
     # Progress / resume reporter.
     threading.Thread(
         target=progress_mod.watch_episode,
-        args=(int(episode_id), int(show_id), int(link_id)),
+        args=(int(episode_id), int(show_id), int(link_id), seedbox, number),
         daemon=True,
     ).start()
 
     # Auto-play next episode watcher — fires PlayMedia(...) when this episode
     # ends with progress ≥ 85% (i.e. natural end, not user stop).
-    if ADDON.getSettingBool("autoplay_next_episode") and show_id and season_num and ep_num:
+    if ADDON.getSettingBool("autoplay_next_episode") and show_id and season_num and ep_num and not seedbox:
         threading.Thread(
             target=_autoplay_next_watcher,
             args=(int(show_id), int(season_num), int(ep_num)),
@@ -365,6 +366,17 @@ def _find_next_episode(show_id, current_season, current_episode_num):
             # Pick the lowest episode number (usually 1).
             return sorted(eps, key=lambda e: e.get("episode_number") or 0)[0]
     return None
+
+
+def play_seedbox(handle, info_hash, number=0):
+    """A file on the seedbox (an AvistaZ download), streamed from the
+    server's signed link: the original file, which Kodi decodes itself."""
+    info = api.get("/play-seedbox/%s" % info_hash, **({"n": number} if number else {}))
+    if number:
+        play_episode(handle, 0, int(info.get("episode_id") or 0), int(info.get("show_id") or 0),
+                     info=info, seedbox=info_hash, number=number)
+    else:
+        play_link(handle, 0, int(info.get("movie_id") or 0), info=info, seedbox=info_hash)
 
 
 def resolve_and_play(handle, movie_id):

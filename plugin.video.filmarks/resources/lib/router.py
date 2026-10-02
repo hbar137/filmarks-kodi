@@ -48,6 +48,12 @@ def dispatch(argv):
         elif action == "play":
             play.play_link(handle, int(params["link_id"]),
                            int(params.get("movie_id", "0")))
+        elif action == "seedbox":
+            views.seedbox(handle)
+        elif action == "seedbox_files":
+            views.seedbox_files(handle, params["hash"])
+        elif action == "play_seedbox":
+            play.play_seedbox(handle, params["hash"], int(params.get("n", "0")))
         elif action == "resolve_links":
             views.resolve_links(handle, int(params["movie_id"]))
         # Show / episode actions

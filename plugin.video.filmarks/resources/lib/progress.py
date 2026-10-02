@@ -5,19 +5,22 @@ import xbmc
 from . import api
 
 
-def _send(movie_id, link_id, position, duration):
+def _send(movie_id, link_id, position, duration, seedbox=None):
+    body = {
+        "movie_id": int(movie_id),
+        "link_id": int(link_id),
+        "position": float(position),
+        "duration": float(duration),
+    }
+    if seedbox:
+        body["seedbox"] = seedbox  # resume key of the seedbox file, shared with the web player
     try:
-        api.post("/progress", body={
-            "movie_id": int(movie_id),
-            "link_id": int(link_id),
-            "position": float(position),
-            "duration": float(duration),
-        })
+        api.post("/progress", body=body)
     except api.APIError as e:
         xbmc.log("[Filmarks] progress save failed: %s" % e, xbmc.LOGWARNING)
 
 
-def watch(movie_id, link_id):
+def watch(movie_id, link_id, seedbox=None):
     """Block until playback ends, snapshotting position every ~10s.
 
     Mirrors scrobble.watch's polling shape (no Player subclass — those get
@@ -44,29 +47,33 @@ def watch(movie_id, link_id):
             break
 
         last_pos = cur
-        _send(movie_id, link_id, cur, duration)
+        _send(movie_id, link_id, cur, duration, seedbox)
 
         if monitor.waitForAbort(10):
             break
 
     # Final flush on stop. Server treats >=95% as finished and clears position.
-    _send(movie_id, link_id, last_pos, duration)
+    _send(movie_id, link_id, last_pos, duration, seedbox)
 
 
-def _send_episode(episode_id, show_id, link_id, position, duration):
+def _send_episode(episode_id, show_id, link_id, position, duration, seedbox=None, number=0):
+    body = {
+        "episode_id": int(episode_id),
+        "show_id": int(show_id),
+        "link_id": int(link_id),
+        "position": float(position),
+        "duration": float(duration),
+    }
+    if seedbox:
+        # lets the server save it even when TMDB doesn't know the season (episode_id 0)
+        body["seedbox"], body["number"] = seedbox, int(number)
     try:
-        api.post("/progress-episode", body={
-            "episode_id": int(episode_id),
-            "show_id": int(show_id),
-            "link_id": int(link_id),
-            "position": float(position),
-            "duration": float(duration),
-        })
+        api.post("/progress-episode", body=body)
     except api.APIError as e:
         xbmc.log("[Filmarks] episode progress save failed: %s" % e, xbmc.LOGWARNING)
 
 
-def watch_episode(episode_id, show_id, link_id):
+def watch_episode(episode_id, show_id, link_id, seedbox=None, number=0):
     player = xbmc.Player()
 
     for _ in range(20):
@@ -89,9 +96,9 @@ def watch_episode(episode_id, show_id, link_id):
             break
 
         last_pos = cur
-        _send_episode(episode_id, show_id, link_id, cur, duration)
+        _send_episode(episode_id, show_id, link_id, cur, duration, seedbox, number)
 
         if monitor.waitForAbort(10):
             break
 
-    _send_episode(episode_id, show_id, link_id, last_pos, duration)
+    _send_episode(episode_id, show_id, link_id, last_pos, duration, seedbox, number)

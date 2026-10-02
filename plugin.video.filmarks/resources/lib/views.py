@@ -300,6 +300,7 @@ def root(handle):
         ("Show History", _url(action="show_history")),
         ("Anime Watchlist", _url(action="show_watchlist", kind="anime")),
         ("Anime Browse", _url(action="shows_browse", kind="anime")),
+        ("Downloads", _url(action="seedbox")),
     ]
     for label, url in items:
         li = xbmcgui.ListItem(label=label)
@@ -997,3 +998,52 @@ def resolve_links(handle, movie_id, update_listing=True):
     if not found:
         api.notify("No cached releases found", icon=xbmcgui.NOTIFICATION_WARNING)
     movie_detail(handle, movie_id, update_listing=update_listing, auto_resolve=False)
+
+
+def _gb(n):
+    return "%.1f GB" % ((n or 0) / 1e9)
+
+
+def seedbox(handle):
+    """Finished seedbox downloads (AvistaZ releases), newest first."""
+    xbmcplugin.setPluginCategory(handle, "Downloads")
+    xbmcplugin.setContent(handle, "movies")
+    data = api.get("/seedbox")
+    for d in data.get("downloads", []):
+        title = d.get("title") or d.get("release") or "?"
+        label = "%s  [COLOR grey]%s · %s[/COLOR]" % (title, d.get("quality") or "", _gb(d.get("size_bytes")))
+        li = xbmcgui.ListItem(label=label)
+        art = _poster_url(d.get("poster"))
+        if art:
+            li.setArt({"poster": art, "thumb": art})
+        li.setInfo("video", {"title": title, "plot": d.get("release") or "",
+                             "mediatype": "movie" if d.get("kind") == "movie" else "tvshow"})
+        if d.get("kind") == "movie":
+            li.setProperty("IsPlayable", "true")
+            xbmcplugin.addDirectoryItem(handle, _url(action="play_seedbox", hash=d["hash"]), li, isFolder=False)
+        else:
+            xbmcplugin.addDirectoryItem(handle, _url(action="seedbox_files", hash=d["hash"]), li, isFolder=True)
+    if not data.get("downloads"):
+        api.notify("No downloads on the seedbox yet")
+    xbmcplugin.endOfDirectory(handle)
+
+
+def seedbox_files(handle, info_hash):
+    """A series download's episode files."""
+    d = api.get("/seedbox/%s" % info_hash)
+    title = d.get("title") or d.get("release") or "?"
+    xbmcplugin.setPluginCategory(handle, title)
+    xbmcplugin.setContent(handle, "episodes")
+    art = _poster_url(d.get("poster"))
+    season = int(d.get("season_number") or 0)
+    for e in d.get("episodes", []):
+        n = int(e["number"])
+        s_num = int(e.get("file_season") or season or 1)
+        li = xbmcgui.ListItem(label="%s  S%02dE%02d  [COLOR grey]%s[/COLOR]" % (title, s_num, n, _gb(e.get("size_bytes"))))
+        if art:
+            li.setArt({"poster": art, "thumb": art})
+        li.setInfo("video", {"tvshowtitle": title, "season": s_num, "episode": n, "mediatype": "episode",
+                             "plot": e.get("filename") or ""})
+        li.setProperty("IsPlayable", "true")
+        xbmcplugin.addDirectoryItem(handle, _url(action="play_seedbox", hash=info_hash, n=n), li, isFolder=False)
+    xbmcplugin.endOfDirectory(handle)
