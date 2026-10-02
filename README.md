@@ -11,7 +11,7 @@ Kodi auto-updates `plugin.video.filmarks` whenever a new version ships.
 
 1. Allow third-party installs: Settings → System → Add-ons → **Unknown sources** on.
 2. Download the repository zip on the Kodi device:
-   <https://hbar137.github.io/filmarks-kodi/repository.filmarks/repository.filmarks-1.0.1.zip>
+   <https://hbar137.github.io/filmarks-kodi/repository.filmarks/repository.filmarks-1.0.2.zip>
 3. Kodi → Add-ons → box icon → **Install from zip file** → pick the downloaded zip.
 4. Add-ons → box icon → **Install from repository** → **Filmarks** → **Video add-ons** → **Filmarks** → Install.
 5. Open the add-on settings and set your password (server URL is preset).
